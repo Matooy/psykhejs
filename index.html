@@ -1,0 +1,49 @@
+<html>
+<head>
+
+<script src="./req/jquery-1.11.1.min.js"></script>
+<script src="./src/psykhe.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Chewy' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
+
+<style>
+
+body {
+  font-family: 'Gloria Hallelujah', Chewy;
+  /*
+  background: #3a3a45;
+  */
+  color: #aaa;
+}
+
+.psykhe{text-shadow: 0 0 8px rgba(0,0,0,0) inset;}
+
+/*-- Style group --*/
+.psykhe-red{color:#aa6443 !important;}
+.psykhe-blue{color:#4453a2 !important;}
+.psykhe-green{color:#46ce52 !important;}
+.psykhe-yellow{color:#b8b867 !important;}
+
+</style>
+
+</head>
+<body>
+
+<table style="height: 100%; width: 100%;"><tr><td style="text-align: center;">
+  <span class="psykhe" style="font-size: 100px; text-align: center;">PSYKHE</span>
+</td></tr></table>
+
+<script>
+
+var P = new PsykheJS({
+  transition: [0.4, "ease-in-out"],
+  group: ['red', 'blue', 'green', 'yellow']
+});
+
+P.enable();
+
+</script>
+
+</body>
+</html>
