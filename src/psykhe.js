@@ -32,6 +32,30 @@
   }
 
 
+  function add_class(el, cls){
+    var cur = el.attr('class').split(' ');
+    cls.split(' ').map(function(c){
+      if(cur.indexOf(c) < 0){
+        cur.push(c);
+        el.attr('class', cur.join(' '));
+      }
+    });
+  }
+
+
+  function remove_class(el, cls){
+    var cur = el.attr('class').split(' ');
+    console.log(cls, cur);
+    cls.split(' ').map(function(c){
+      if(cur.indexOf(c) >= 0){
+        el.attr('class', cur.filter(function(v){
+          return v !== c;
+        }).join(' '));
+      }
+    });
+  }
+
+
   this.lazy_change = function(el, p){
     setTimeout($.proxy(this.group_applier(el, p), this), C.transition[0]*1000);
   }
@@ -48,13 +72,13 @@
   }
 
   this.add_group_class = function(el, n){
-    el.addClass(C.prefix + '-' + C.group[n]);
+    add_class(el, C.prefix + '-' + C.group[n]);
   }
 
   this.remove_group_class = function(el){
-    el.removeClass((C.group.map($.proxy(function(v){
+    remove_class(el, (C.group.map($.proxy(function(v){
       return C.prefix + '-' + v;
-    }, this)).join(" ")));
+    }, this)).join(' ')));
   }
 
   this.toggle = function(el, n){
@@ -69,14 +93,14 @@
   }
 
   this.start = function(el){
-    el.addClass(C.prefix +"-"+ C.keeper);
+    add_class(el, C.prefix +"-"+ C.keeper);
     el.one('mouseout', $.proxy(function(){
       this.stop(el);
     }, this));
   }
 
   this.stop = function(el){
-    el.removeClass(C.prefix +"-"+ C.keeper);
+    remove_class(el, C.prefix +"-"+ C.keeper);
     this.remove_group_class(el);
     S.prev = null;
   }
