@@ -45,7 +45,6 @@
 
   function remove_class(el, cls){
     var cur = el.attr('class').split(' ');
-    console.log(cls, cur);
     cls.split(' ').map(function(c){
       if(cur.indexOf(c) >= 0){
         el.attr('class', cur.filter(function(v){
@@ -53,6 +52,14 @@
         }).join(' '));
       }
     });
+  }
+
+
+  function has_class(el, cls){
+    var cur = el.attr('class').split(' ');
+    return cls.split(' ').map(function(c){
+      return cur.indexOf(c) > -1;
+    }).length > 0;
   }
 
 
@@ -68,7 +75,7 @@
   }
 
   this.has_keeper = function(el){
-    return el.hasClass(C.prefix +"-"+ C.keeper);
+    return has_class(el, C.prefix +"-"+ C.keeper);
   }
 
   this.add_group_class = function(el, n){
@@ -93,6 +100,7 @@
   }
 
   this.start = function(el){
+    console.log('started');
     add_class(el, C.prefix +"-"+ C.keeper);
     el.one('mouseout', $.proxy(function(){
       this.stop(el);
@@ -100,6 +108,7 @@
   }
 
   this.stop = function(el){
+    console.log('stopped');
     remove_class(el, C.prefix +"-"+ C.keeper);
     this.remove_group_class(el);
     S.prev = null;
