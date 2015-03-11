@@ -91,23 +91,17 @@
     if(n !== false && this.has_keeper(el)){
       this.remove_group_class(el);
       this.add_group_class(el, n);
-      S.prev = n;
       this.lazy_change(el, n);
+      S.prev = n;
     }else{
       this.stop(el);
     }
   }
 
   this.start = function(el){
-
     var p = S.prev;
     var n = rand(p, C.group);
-
     add_class(el, C.prefix +"-"+ C.keeper);
-    el.one('mouseout', $.proxy(function(){
-      this.stop(el);
-    }, this));
-
     this.toggle(el, n);
   }
 
@@ -118,7 +112,11 @@
   }
 
   this.events.mouseover =  function(e){
-    this.start($(e.target));
+    var el = $(e.target);
+    this.start(el);
+    el.one('mouseout', $.proxy(function(){
+      this.stop(el);
+    }, this));
   }
 
   this.events.mouseout = function(e){
@@ -141,11 +139,17 @@
     this.init_style();
   }
 
-  this.listen = function(){
-    $(document).on('mouseover.psyche-event-mouseover', C.selector,
-        $.proxy(this.events.mouseover, this));
-    $(document).on('mouseout.psyche-event-mouseout', C.selector,
-        $.proxy(this.events.mouseout, this));
+  this.listen = function(evs){
+    var a = (evs && evs.length > 0 ? (evs.push ? evs : [evs]) : []);
+    var self =this;
+    a.push('mouseover', 'mouseout');
+    a.map(function(en){
+      $(document).on(
+        en + '.psyche-event-' + en,
+        C.selector,
+        $.proxy(self.events[en], self)
+      );
+    });
   }
 
   this.all = function(){
@@ -155,9 +159,10 @@
     });
   }
 
-  this.disable = function(){
-    $(document).off('mouseover.psyche-event-mouseover');
-    $(document).off('mouseover.psyche-event-mouseout');
+  this.disable = function(e_list){
+    e_list.map(function(e){
+      $(document).off(e + '.psyche-event-' + e);
+    });
   }
 
   return this;
