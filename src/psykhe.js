@@ -87,7 +87,6 @@
   }
 
   this.toggle = function(el, n){
-    console.log('has_keeper', this.has_keeper(el));
     if(n !== false && this.has_keeper(el)){
       this.remove_group_class(el);
       this.add_group_class(el, n);
