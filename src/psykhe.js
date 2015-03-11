@@ -7,6 +7,8 @@
 
 })(this, function(conf){
 
+  var self = this;
+
   this.config = $.extend({
     selector:   '.psykhe',
     prefix:     'psykhe',
@@ -45,19 +47,15 @@
 
   function remove_class(el, cls){
     var cur = el.attr('class').split(' ');
-    cls.split(' ').map(function(c){
-      if(cur.indexOf(c) >= 0){
-        el.attr('class', cur.filter(function(v){
-          return v !== c;
-        }).join(' '));
-      }
-    });
+    el.attr('class', cur.filter(function(c){
+      return (cls.split(' ').indexOf(c) < 0);
+    }).join(' '));
   }
 
 
   function has_class(el, cls){
     var cur = el.attr('class').split(' ');
-    return cls.split(' ').map(function(c){
+    return cls.split(' ').filter(function(c){
       return cur.indexOf(c) > -1;
     }).length > 0;
   }
@@ -89,7 +87,8 @@
   }
 
   this.toggle = function(el, n){
-    if(n !== false){
+    console.log('has_keeper', this.has_keeper(el));
+    if(n !== false && this.has_keeper(el)){
       this.remove_group_class(el);
       this.add_group_class(el, n);
       S.prev = n;
@@ -100,27 +99,26 @@
   }
 
   this.start = function(el){
-    console.log('started');
+
+    var p = S.prev;
+    var n = rand(p, C.group);
+
     add_class(el, C.prefix +"-"+ C.keeper);
     el.one('mouseout', $.proxy(function(){
       this.stop(el);
     }, this));
+
+    this.toggle(el, n);
   }
 
   this.stop = function(el){
-    console.log('stopped');
     remove_class(el, C.prefix +"-"+ C.keeper);
     this.remove_group_class(el);
     S.prev = null;
   }
 
   this.events.mouseover =  function(e){
-    var p = S.prev;
-    var n = rand(p, C.group);
-    var el = $(e.target);
-
-    this.start(el);
-    this.toggle(el, n);
+    this.start($(e.target));
   }
 
   this.events.mouseout = function(e){
@@ -141,10 +139,20 @@
 
   this.enable = function(){
     this.init_style();
+  }
+
+  this.listen = function(){
     $(document).on('mouseover.psyche-event-mouseover', C.selector,
         $.proxy(this.events.mouseover, this));
     $(document).on('mouseout.psyche-event-mouseout', C.selector,
         $.proxy(this.events.mouseout, this));
+  }
+
+  this.all = function(){
+    $(C.selector).each(function(){
+      var el = $(this);
+      self.start(el);
+    });
   }
 
   this.disable = function(){
